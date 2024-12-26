@@ -3,21 +3,22 @@ package com.example.talabati.model;
 import java.util.List;
 
 public class Restaurant {
+
     private int id;
     private String name;
     private String description;
     private String address;
     private List<String> phoneNumbers;
-    private List<Integer> subCategoriesId;
+    private List<SubCategory> subCategories;
     private List<Integer> productsIds;
 
-    public Restaurant(int id, String name, String description, String address, List<String> phoneNumbers, List<Integer> subCategoriesId, List<Integer> productsIds) {
+    public Restaurant(int id, String name, String description, String address, List<String> phoneNumbers, List<SubCategory> subCategoriesId, List<Integer> productsIds) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.address = address;
         this.phoneNumbers = phoneNumbers;
-        this.subCategoriesId = subCategoriesId;
+        this.subCategories = subCategoriesId;
         this.productsIds = productsIds;
     }
 
@@ -64,12 +65,12 @@ public class Restaurant {
         this.phoneNumbers = phoneNumbers;
     }
 
-    public List<Integer> getSubCategoriesId() {
-        return this.subCategoriesId;
+    public List<SubCategory> getSubCategoriesId() {
+        return this.subCategories;
     }
 
-    public void setSubCategoriesId(List<Integer> subCategoriesId) {
-        this.subCategoriesId = subCategoriesId;
+    public void setSubCategoriesId(List<SubCategory> subCategoriesId) {
+        this.subCategories = subCategoriesId;
     }
 
     public List<Integer> getProductsIds() {
@@ -79,6 +80,5 @@ public class Restaurant {
     public void setProductsIds(List<Integer> productsIds) {
         this.productsIds = productsIds;
     }
-    
 
 }
