@@ -35,7 +35,7 @@ public class ProductServiceController {
     @PostMapping
     public ResponseEntity<String> createProduct(@RequestBody Product product) {
         try {
-            productDao.addProduct(product);
+            productDao.addProduct(product); // this is the service concept 
             return ResponseEntity.ok("Product Created Successfully");
         } catch (Exception e) {
 
