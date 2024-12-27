@@ -3,26 +3,63 @@ package com.example.talabati.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.ManyToAny;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+
+@Entity
 public class Order {
-    private int id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false)
     private int userId;
+    @Column(nullable = false)
+    @ManyToMany
+    @JoinTable(
+        name = "order_product",
+        joinColumns = @JoinColumn(name = "order_id"),
+        inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
     private List<Product> orderItems;
+    @Column(nullable = false)
     private String deliveryAdress;
+    @Column(nullable = false)
     private double totalPrice;
+    @Column(nullable = false)
     private String status;
     private int deliveryId;
-    private Payment payment;
+    // private Payment payment;
+    @Column( nullable = false)
+    private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
-    private LocalDateTime lastUpdateAt;    
-    
+
+    @Column(name = "updated_at")
+    @PrePersist
+    public void onCreate() {
+        createdAt = LocalDateTime.now();
+
+    }
+
+
     public Order() {
     }
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -74,13 +111,13 @@ public class Order {
         this.deliveryId = deliveryId;
     }
 
-    public Payment getPayment() {
-        return this.payment;
-    }
+    // public Payment getPayment() {
+    //     return this.payment;
+    // }
 
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-    }
+    // public void setPayment(Payment payment) {
+    //     this.payment = payment;
+    // }
 
     public LocalDateTime getCreatedAt() {
         return this.createdAt;
@@ -90,12 +127,12 @@ public class Order {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getLastUpdateAt() {
-        return this.lastUpdateAt;
+    public LocalDateTime getUpdatedAt() {
+        return this.updatedAt;
     }
 
-    public void setLastUpdateAt(LocalDateTime lastUpdateAt) {
-        this.lastUpdateAt = lastUpdateAt;
+    public void setUpdatedAt(LocalDateTime lastUpdateAt) {
+        this.updatedAt = lastUpdateAt;
     }
 
 }

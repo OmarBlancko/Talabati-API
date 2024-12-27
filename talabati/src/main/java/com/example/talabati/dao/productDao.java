@@ -61,7 +61,7 @@ public class productDao { // work as product Repository
 
     private RowMapper<Product> productRowMapper() {
         return (rs, rowNum)
-                -> new Product(rs.getInt("p_id"),
+                -> new Product(rs.getLong("p_id"),
                         rs.getString("p_name"),
                         rs.getDouble("p_price"));
     }

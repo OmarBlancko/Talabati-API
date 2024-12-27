@@ -1,6 +1,7 @@
 package com.example.talabati.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.management.RuntimeErrorException;
 
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.talabati.dao.productDao;
 import com.example.talabati.model.Product;
+import com.example.talabati.service.ProductService;
 
 /**
  *
@@ -26,16 +28,17 @@ import com.example.talabati.model.Product;
  */
 @RestController
 @RequestMapping("/products")
-public class ProductServiceController {
+public class ProductController {
 
     @Autowired
-    private productDao productDao;
+    private ProductService productService;
 
     //// POST Method 
     @PostMapping
     public ResponseEntity<String> createProduct(@RequestBody Product product) {
         try {
-            productDao.addProduct(product); // this is the service concept 
+            productService.createOrUpdateProduct(product);
+          //  productDao.addProduct(product); // this is the service concept 
             return ResponseEntity.ok("Product Created Successfully");
         } catch (Exception e) {
 
@@ -46,9 +49,10 @@ public class ProductServiceController {
 
     //// GET specific product Method
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable("id") int id) {
+    public ResponseEntity<Product> getProductById(@PathVariable("id") long id) {
         try {
-            Product product = productDao.getProductById(id);
+            Product product = productService.getProductById(id);
+          //  Product product = productDao.getProductById(id);
             if (product == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
@@ -64,7 +68,7 @@ public class ProductServiceController {
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
         try {
-            List<Product> products = productDao.getAllProducts();
+            List<Product> products = productService.getAllProducts();
             return ResponseEntity.ok(products);
 
         } catch (Exception e) {
@@ -77,7 +81,7 @@ public class ProductServiceController {
     public ResponseEntity<Product> updateProduct(@PathVariable("id") int id, @RequestBody Product product) {
         try {
             product.setId(id);
-            productDao.updateProduct(product);
+            productService.createOrUpdateProduct(product);
             return ResponseEntity.ok(product);
         } catch (Exception e) {
 
@@ -91,7 +95,7 @@ public class ProductServiceController {
     @DeleteMapping("/{id}")
     public String deleteProduct(@PathVariable("id") int id) {
         try {
-            productDao.deleteProduct(id);
+            productService.deleteProduct(id);
             return "Product deleted successfully !";
         } catch (Exception e) {
             return "Error while deleting product" + e.getMessage();

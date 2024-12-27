@@ -4,27 +4,39 @@
  */
 package com.example.talabati.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 /**
  *
  * @author Blancko
  */
+@Entity
 public class Product {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @Column(nullable=false)
     private String name;
+    @Column(nullable=false)
+
     private double price;
 
     public Product() {
 
     }
 
-    public Product(int id, String name, double price) {
+    public Product(long id, String name, double price) {
         this.id = id;
         this.name = name;
         this.price = price;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -36,7 +48,7 @@ public class Product {
         return price;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

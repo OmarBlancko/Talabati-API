@@ -4,14 +4,14 @@ public class ProfileSettings {
 
     private int id;
     private boolean enableNotification;
-    private String langauge;
+    private String language;
     private int userId;
     private boolean isDarkMood;
     public ProfileSettings(int id, int userId) {
         this.id = id;
         this.isDarkMood = false;
         this.enableNotification = true;
-        this.langauge = "en";
+        this.language = "en";
         this.userId = userId;
     }
 
@@ -19,7 +19,7 @@ public class ProfileSettings {
         this.id = id;
         this.isDarkMood = isDarkMood;
         this.enableNotification = enableNotification;
-        this.langauge = langauge;
+        this.language = langauge;
         this.userId = userId;
     }
     public int getId() {
@@ -55,11 +55,11 @@ public class ProfileSettings {
     }
 
     public String getLangauge() {
-        return this.langauge;
+        return this.language;
     }
 
     public void setLangauge(String langauge) {
-        this.langauge = langauge;
+        this.language = langauge;
     }
 
     public int getUserId() {
