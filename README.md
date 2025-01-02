@@ -4,4 +4,6 @@ Talabati Spring boot application that is used to store and retrieve data using
 - Spring
 - REST API
 - MySQL
-- JDBC
+- JDBC & JPA
+- Spring Security
+- 
