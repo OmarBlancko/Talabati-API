@@ -1,5 +1,7 @@
 package com.example.talabati.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +19,8 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "order_id") // Foreign key to Order table
-    private Order order;    
+    @JsonIgnore
+    private Order order;  //This will ensure that the order field in OrderItem is not serialized, breaking the recursion.
     @ManyToOne
     @JoinColumn(name = "product_id") // Maps a foreign key to Product
     private Product product;
@@ -45,6 +48,7 @@ public class OrderItem {
         this.id = id;
     }
 
+
     public Order getOrder() {
         return this.order;
     }
@@ -53,13 +57,16 @@ public class OrderItem {
         this.order = order;
     }
 
-    public Product product() {
+    public Product getProduct() {
         return this.product;
     }
 
-    public void setProductId(Product product) {
+    public void setProduct(Product product) {
         this.product = product;
     }
+ 
+
+
 
     public int getQuantity() {
         return this.quantity;

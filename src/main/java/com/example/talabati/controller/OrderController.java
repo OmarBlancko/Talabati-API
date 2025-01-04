@@ -1,7 +1,10 @@
 package com.example.talabati.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.talabati.controller.Exceptions.OrderNotFoundException;
 import com.example.talabati.controller.Exceptions.PaymentNotFoundException;
 import com.example.talabati.model.Order;
+import com.example.talabati.model.OrderItem;
 import com.example.talabati.model.Payment;
+import com.example.talabati.service.OrderItemsService;
 import com.example.talabati.service.OrderService;
 import com.example.talabati.service.PaymentService;
 
@@ -33,6 +38,8 @@ public class OrderController {
     private OrderService orderService;
     @Autowired
     private PaymentService paymentService;
+    @Autowired
+    private OrderItemsService orderItemsService;
 
     /// POST Method
     @PostMapping
@@ -42,8 +49,12 @@ public class OrderController {
             orderService.createOrder(order);
             Payment payment = order.getPayment();
             payment.setOrderId(order.getId());
-            paymentService.createOrUpdatePayment(order.getPayment());
-            
+            paymentService.createPayment(order.getPayment());
+            List<OrderItem> orderItemsList = order.getOrderItems();
+            orderItemsList.forEach((orderItem) -> {
+                orderItem.setOrder(order);
+            });
+            orderItemsService.createOrderItems(orderItemsList);
             return ResponseEntity.status(HttpStatus.CREATED).body("Order Created Sucessfully");
         } catch (PaymentNotFoundException pe) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment  Error " + pe.getMessage());
@@ -54,10 +65,47 @@ public class OrderController {
         }
     }
 
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateOrder(@PathVariable("id") long id, @RequestBody Order order) {
         try {
+            if (order.getPayment() != null) {
+                Payment payment = order.getPayment();
+                Payment existingPayment = paymentService.findPaymentByOrderId(id);
+                payment.setId(existingPayment.getId());
+                payment.setOrderId(existingPayment.getOrderId());
+                paymentService.updatePayment(payment, payment.getId());
+            }
+            if (!order.getOrderItems().isEmpty()) 
+            {
+                List<OrderItem> orderItems = order.getOrderItems();
+                List<OrderItem> existingOrderItems = orderItemsService.getItemsByOrderId(id);
+
+                Map<Long, OrderItem> existingOrderItemsMap = existingOrderItems.stream()
+                .collect(Collectors.toMap(OrderItem::getId, item -> item));
+                List<OrderItem> requestedOrderItems =new ArrayList<>() ;
+                orderItems.forEach((OrderItem orderItem) -> {
+                    if(orderItem.getId() == 0)
+                    {
+                        orderItem.setOrder(order);
+                        requestedOrderItems.add(orderItem);
+                        orderItemsService.createOrderItems(requestedOrderItems);
+                        requestedOrderItems.clear();
+                    }
+                    else if(existingOrderItemsMap.containsKey(orderItem.getId())) {
+                        OrderItem existingItem = existingOrderItemsMap.get(orderItem.getId());
+                        if(!orderItem.equals(existingItem)) {
+                            orderItemsService.updateOrderItems(orderItem, orderItem.getId());
+                        }
+                        existingOrderItemsMap.remove(orderItem.getId());
+                    }
+                });
+                
+
+            }
+
             orderService.UpdateOrder(order, id);
+
             return ResponseEntity.status(HttpStatus.OK).body("Order Updated successfully");
         } catch (OrderNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found: " + e.getMessage());
@@ -80,6 +128,7 @@ public class OrderController {
                 }
             } else {
                 List<Order> orders = orderService.getAllOrders();
+                System.out.println(orders.size());
                 if (!orders.isEmpty()) {
                     return ResponseEntity.ok(orders);
                 } else {
@@ -96,7 +145,7 @@ public class OrderController {
         try {
 
             Optional<List<Order>> response = orderService.getUserOrders(userId);
-            if (response.isPresent() && ! response.isEmpty() != true) {
+            if (response.isPresent() && !response.isEmpty() != true) {
                 return ResponseEntity.ok(response.get());
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

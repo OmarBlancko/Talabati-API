@@ -21,9 +21,10 @@ public class Payment {
     private String paymentMethod;
     @Column(nullable = false)
     private String status;
-    @Column(nullable = false)
+    @Column(nullable = false,updatable=false)
     private LocalDateTime createdAt;
     private String transactionId;
+    @Column(name="order_id")
     private long orderId;
 
     public Payment() {
@@ -38,11 +39,15 @@ public class Payment {
         this.createdAt=createdAt;
         this.transactionId = transactionId;
     }
+
     @PrePersist
     public void onCreate() {
-        createdAt = LocalDateTime.now();
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
 
     }
+
     public long getId() {
         return this.id;
     }
