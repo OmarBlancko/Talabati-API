@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.talabati.controller.Exceptions.OrderItemsNotFoundException;
+import com.example.talabati.Exceptions.OrderItemsNotFoundException;
 import com.example.talabati.model.OrderItem;
 import com.example.talabati.repositories.OrderItemRespository;
 

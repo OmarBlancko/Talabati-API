@@ -3,6 +3,9 @@ package com.example.talabati.model;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,7 +23,7 @@ public class Role {
 
     @Column(nullable= false , unique = true)
     private String name;
-
+@JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
     public Role() {

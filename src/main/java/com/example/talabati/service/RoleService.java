@@ -1,13 +1,8 @@
 package com.example.talabati.service;
 
-import org.springframework.stereotype.Service;
-import com.example.talabati.repositories.RoleRepository;
+import com.example.talabati.model.Role;
 
-@Service
-public class RoleService {
-    private final RoleRepository roleRepository;
+public interface RoleService {
 
-    public RoleService(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
+    Role findByName(String name);
 }

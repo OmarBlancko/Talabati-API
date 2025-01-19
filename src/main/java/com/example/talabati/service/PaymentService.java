@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.talabati.controller.Exceptions.PaymentNotFoundException;
+import com.example.talabati.Exceptions.PaymentNotFoundException;
 import com.example.talabati.model.Payment;
 import com.example.talabati.repositories.PaymentRepository;
 
@@ -24,6 +24,7 @@ public class PaymentService {
     }
 
     public Payment createPayment(Payment payment) {
+        
         try {
             if (payment == null) {
                 throw new IllegalArgumentException("payment cannot be null");

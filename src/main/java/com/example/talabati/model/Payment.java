@@ -112,5 +112,21 @@ public class Payment {
         this.createdAt = createdAt;
     }
 
+    public void updateFrom(Payment other) {
+        if (other == null) {
+            throw new IllegalArgumentException("The provided payment is null");
+        }
+    
+        // Update fields
+        this.amount = other.getAmount();
+        this.paymentMethod = other.getPaymentMethod();
+        this.status = other.getStatus();
+        this.transactionId = other.getTransactionId();
+    
+        // Order ID should only be updated if it is explicitly changed
+        if (other.getOrderId() != 0) {
+            this.orderId = other.getOrderId();
+        }
+    }
     
 }

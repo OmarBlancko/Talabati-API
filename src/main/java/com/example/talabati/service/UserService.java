@@ -1,13 +1,12 @@
 package com.example.talabati.service;
 
-import org.springframework.stereotype.Service;
-import com.example.talabati.repositories.UserRepository;
 
-@Service
-public class UserService {
-    private final UserRepository userRepository;
+import com.example.talabati.model.ApiResponse;
+import com.example.talabati.model.User;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+public interface UserService{
+     ApiResponse<User>  findByUsername(String username);
+     ApiResponse<User>  findByemail(String email);
+     ApiResponse<User>  createUser(User user);
+     ApiResponse<User>  updateUser(User user,Long id);
 }

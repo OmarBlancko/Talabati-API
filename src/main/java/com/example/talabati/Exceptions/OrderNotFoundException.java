@@ -1,4 +1,4 @@
-package com.example.talabati.controller.Exceptions;
+package com.example.talabati.Exceptions;
 
 public class OrderNotFoundException extends RuntimeException {
     public OrderNotFoundException(String message) {

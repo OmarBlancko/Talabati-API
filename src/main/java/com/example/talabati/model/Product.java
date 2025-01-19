@@ -1,6 +1,7 @@
 
 package com.example.talabati.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -35,7 +36,7 @@ public class Product {
         joinColumns = @JoinColumn(name = "product_id"),
         inverseJoinColumns = @JoinColumn(name = "sub_category_id")
     )
-    private Set<RestaurantSubCategory> subCategories;
+    private Set<RestaurantSubCategory> subCategories = new HashSet<>();
 
     private long restaurantId;
     private boolean isAvailabe;

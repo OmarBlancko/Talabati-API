@@ -1,4 +1,4 @@
-package com.example.talabati.controller.Exceptions;
+package com.example.talabati.Exceptions;
 
 public class PaymentNotFoundException extends RuntimeException {
     public PaymentNotFoundException(String message) {

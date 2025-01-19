@@ -1,5 +1,81 @@
 package com.example.talabati.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.talabati.model.ApiResponse;
+import com.example.talabati.model.Order;
+import com.example.talabati.service.OrderService;
+
+import jakarta.transaction.Transactional;
+
+@RestController
+@RequestMapping("/orders")
+public class OrderController {
+
+    @Autowired
+    private OrderService orderService;
+
+    /// POST Method
+    @PostMapping
+    @Transactional(rollbackOn = Exception.class)
+    public ResponseEntity<ApiResponse<Order>> createOrder(@RequestBody Order order) {
+
+        ApiResponse<Order> response = orderService.createOrder(order);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @Transactional
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<?>> updateOrder(@PathVariable("id") long id, @RequestBody Order order) {
+
+        ApiResponse<Order> response2 = orderService.UpdateOrder(order, id);
+
+        return ResponseEntity.ok(response2);
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<?>> getOrdersById(@RequestParam(value = "id", required = false) Long id) {
+        if (id != null) {
+            Order orderResponse = orderService.getOrderById(id);
+            ApiResponse<Order> response = new ApiResponse<>(200, "Order fetched successfully", orderResponse);
+            return ResponseEntity.status(response.getStatusCode()).body(response);
+        } else {
+            ApiResponse<List<Order>> response = orderService.getAllOrders();
+            return ResponseEntity.status(response.getStatusCode()).body(response);
+        }
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<ApiResponse<List<Order>>> getOrdersByUserId(@PathVariable("userId") long userId) {
+        ApiResponse<List<Order>> response = orderService.getUserOrders(userId);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteOrder(@PathVariable("id") long id) {
+
+        orderService.deleteOrder(id);
+        ApiResponse<String> response = new ApiResponse<>(200, "Order deleted successfully", null);
+
+        return ResponseEntity.ok(response);
+
+    }
+}
+
+/*package com.example.talabati.controller;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +145,7 @@ public class OrderController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateOrder(@PathVariable("id") long id, @RequestBody Order order) {
         try {
+            Order existingOrder = orderService.getOrderById(id);
             if (order.getPayment() != null) {
                 Payment payment = order.getPayment();
                 Payment existingPayment = paymentService.findPaymentByOrderId(id);
@@ -76,35 +153,35 @@ public class OrderController {
                 payment.setOrderId(existingPayment.getOrderId());
                 paymentService.updatePayment(payment, payment.getId());
             }
-            if (!order.getOrderItems().isEmpty()) 
+            if (order.getOrderItems() != null &&!order.getOrderItems().isEmpty() ) 
             {
-                List<OrderItem> orderItems = order.getOrderItems();
+                List<OrderItem> incomingOrderItems = order.getOrderItems();
                 List<OrderItem> existingOrderItems = orderItemsService.getItemsByOrderId(id);
 
                 Map<Long, OrderItem> existingOrderItemsMap = existingOrderItems.stream()
                 .collect(Collectors.toMap(OrderItem::getId, item -> item));
-                List<OrderItem> requestedOrderItems =new ArrayList<>() ;
-                orderItems.forEach((OrderItem orderItem) -> {
-                    if(orderItem.getId() == 0)
+                incomingOrderItems.forEach((OrderItem incomingItem) -> {
+                    if(incomingItem.getId() == 0)   
                     {
-                        orderItem.setOrder(order);
-                        requestedOrderItems.add(orderItem);
-                        orderItemsService.createOrderItems(requestedOrderItems);
-                        requestedOrderItems.clear();
+                        // assign new item 
+                        incomingItem.setOrder(order);
+                        existingOrderItems.add(incomingItem);
+
                     }
-                    else if(existingOrderItemsMap.containsKey(orderItem.getId())) {
-                        OrderItem existingItem = existingOrderItemsMap.get(orderItem.getId());
-                        if(!orderItem.equals(existingItem)) {
-                            orderItemsService.updateOrderItems(orderItem, orderItem.getId());
-                        }
-                        existingOrderItemsMap.remove(orderItem.getId());
+                    else if(existingOrderItemsMap.containsKey(incomingItem.getId())) {
+                        // update existing item 
+                        OrderItem existingItem = existingOrderItemsMap.get(incomingItem.getId());
+                        existingItem.updateFrom(incomingItem);
+                        existingOrderItemsMap.remove(incomingItem.getId());
                     }
+                    existingOrderItems.removeIf(item -> existingOrderItemsMap.containsKey(item.getId()));
+
                 });
                 
 
             }
-
-            orderService.UpdateOrder(order, id);
+            existingOrder.updateFrom(order);
+            orderService.UpdateOrder(existingOrder, id);
 
             return ResponseEntity.status(HttpStatus.OK).body("Order Updated successfully");
         } catch (OrderNotFoundException e) {
@@ -175,3 +252,4 @@ public class OrderController {
     }
 
 }
+ */

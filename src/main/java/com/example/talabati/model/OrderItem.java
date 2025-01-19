@@ -84,5 +84,11 @@ public class OrderItem {
         this.total = total;
     }
     
-
+    public void updateFrom(OrderItem other) {
+        this.quantity = other.getQuantity(); // Example field
+        this.total = other.getTotal();
+        this.product = other.getProduct();
+        this.order = other.getOrder();
+        // Add more fields as necessary
+    }
 }

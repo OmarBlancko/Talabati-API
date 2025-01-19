@@ -1,9 +1,12 @@
 package com.example.talabati.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.talabati.Exceptions.ProductNotFoundException;
+import com.example.talabati.model.ApiResponse;
 import com.example.talabati.model.Product;
 import com.example.talabati.repositories.ProductRepository;
 
@@ -17,58 +20,80 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product createOrder(Product product) {
+    public ApiResponse<Product> createProduct(Product product) {
 
         if (product == null) {
             throw new IllegalArgumentException("product cannot be null");
         }
-        return productRepository.save(product);
+        Product productResponse = productRepository.save(product);
+        ApiResponse<Product> response = new ApiResponse<>(200, "Product Created Successfully", productResponse);
+        return response;
     }
 
-    public Product UpdateProduct(Product product, Long id) {
-
+    public ApiResponse<Product> UpdateProduct(Product product, Long id) {
         if (product == null) {
-            throw new IllegalArgumentException("Product cannot be null");
+            throw new IllegalArgumentException("Product cannot be null ! invalid request !");
         }
+
         Product existingProduct = getProductById(id);
         product.setId(id);
-        if (product.getName() != null && !product.getName().trim().isEmpty()) {
-            existingProduct.setName(product.getName());
+        if (existingProduct == null) {
+            throw new ProductNotFoundException("Product not found !");
         }
-        if (product.getPrice() > 0) {
-            existingProduct.setPrice(product.getPrice());
-        }
-        if (product.getDescription() != null && !product.getDescription().trim().isEmpty()) {
-            existingProduct.setDescription(product.getDescription());
-        }
-        if (product.getRestaurantId() > 0) {
-            existingProduct.setRestaurantId(product.getRestaurantId());
-        }
-        if (!product.getSubCategories().isEmpty()) {
-            existingProduct.setSubCategories(product.getSubCategories());
-        }
-
-        return productRepository.save(existingProduct);
+        checkRequestValidity(existingProduct, product);
+        Product updatedProduct = productRepository.save(existingProduct);
+        ApiResponse<Product> response = new ApiResponse<>(200, "Product updated successfully !", updatedProduct);
+        return response;
     }
 
     public Product getProductById(Long id) {
-        try {
-            return productRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Couldn't retrieve product with ID: " + id));
+        Optional<Product> optionaProduct = productRepository.findById(id);
+        if (optionaProduct.get() == null) {
 
-        } catch (Exception e) {
-            throw new RuntimeException("Couldn't retreive product" + e.getMessage());
+            throw new ProductNotFoundException("No product found with associated id >>>");
+        } else {
+            return optionaProduct.get();
         }
 
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public ApiResponse<List<Product>> getAllProducts() {
+        List<Product> responseList = productRepository.findAll();
+        if (responseList.isEmpty()) {
+            throw new ProductNotFoundException("No products found in DB");
+        }
+        ApiResponse<List<Product>> response = new ApiResponse<>(200, "Product fetched successfully !", responseList);
+        return response;
     }
 
-    public void deleteProduct(long id) {
+    public ApiResponse<?> deleteProduct(long id) {
+        Product existingProduct = getProductById(id);
+        if (existingProduct == null) {
+            throw new ProductNotFoundException("No product found in DB with this id");
+
+        }
 
         productRepository.deleteById(id);
+        ApiResponse<Product> response = new ApiResponse<>(200, "Product deleted successfully !", null);
+        return response;
+    }
+
+    public void checkRequestValidity(Product existingProduct, Product updatedProduct) {
+        if (updatedProduct.getName() != null && !updatedProduct.getName().trim().isEmpty()) {
+            existingProduct.setName(updatedProduct.getName());
+        }
+        if (updatedProduct.getPrice() > 0) {
+            existingProduct.setPrice(updatedProduct.getPrice());
+        }
+        if (updatedProduct.getDescription() != null && !updatedProduct.getDescription().trim().isEmpty()) {
+            existingProduct.setDescription(updatedProduct.getDescription());
+        }
+        if (updatedProduct.getRestaurantId() > 0) {
+            existingProduct.setRestaurantId(updatedProduct.getRestaurantId());
+        }
+        if (!updatedProduct.getSubCategories().isEmpty()) {
+            existingProduct.setSubCategories(updatedProduct.getSubCategories());
+        }
     }
 
 }

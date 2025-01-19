@@ -1,6 +1,7 @@
 package com.example.talabati.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -169,5 +170,42 @@ public class Order {
         this.payment = payment;
     }
 
+public void updateFrom(Order other) {
+    if (other == null) {
+        throw new IllegalArgumentException("The provided order is null");
+    }
+
+    // Update fields
+    this.userId = other.getUserId();
+    this.deliveryAddress = other.getDeliveryAddress();
+    this.totalPrice = other.getTotalPrice();
+    this.status = other.getStatus();
+    this.deliveryId = other.getDeliveryId();
+
+    // Update payment
+    if (other.getPayment() != null) {
+        if (this.payment == null) {
+            this.payment = new Payment();
+        }
+        this.payment.updateFrom(other.getPayment()); // Assume `Payment` has an `updateFrom` method
+    }
+
+    // Update order items
+    if (other.getOrderItems() != null) {
+        if (this.orderItems == null) {
+            this.orderItems = new ArrayList<>();
+        }
+        // Clear and copy items
+        this.orderItems.clear();
+        other.getOrderItems().forEach(item -> {
+            OrderItem newItem = new OrderItem();
+            newItem.updateFrom(item); // Use the `updateFrom` method in `OrderItem`
+            newItem.setOrder(this); // Ensure the relationship is maintained
+            this.orderItems.add(newItem);
+        });
+    }
+
+    // Timestamps should be updated automatically via @PreUpdate
+}
 
 }
