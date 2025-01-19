@@ -7,4 +7,4 @@ Talabati Spring boot application that used to store and reterive data using Spri
 - Spring Security
 - JWT
 - Global  Exception Handler
-- 
+  
