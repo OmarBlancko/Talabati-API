@@ -1,4 +1,4 @@
-package com.example.talabati.service;
+package com.example.talabati.service.JwtServices;
 
 import java.util.Collections;
 
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.talabati.config.Util.JwtUtil;
 import com.example.talabati.model.User;
+import com.example.talabati.service.UserService;
 
 @Service
 public class JwtAuthenticationService {
@@ -24,7 +25,7 @@ public class JwtAuthenticationService {
 
     public UserDetails loadUserByToken(String token) {
         String username = jwtUtil.extractUsername(token);
-        User user = userService.findByUsername(username).getData();
+        User user = userService.findByUsername(username);
 
         if (user == null) {
             throw new UsernameNotFoundException("User not found");

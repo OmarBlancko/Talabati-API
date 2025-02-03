@@ -2,6 +2,7 @@ package com.example.talabati.service;
 
 import java.util.HashSet;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,13 +38,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<User> findByUsername(String username) {
+    public User findByUsername(String username) {
         User user = userRepository.findByUsername(username);
+        
         if (user == null) {
             throw new UserNotFoundException("User with username" + username + "not found");
         } else {
-            ApiResponse<User> response = new ApiResponse<>(200, "User fetched Successfully", user);
-            return response;
+                    Hibernate.initialize(user.getRoles());
+
+             return user;
 
         }
     }

@@ -5,8 +5,7 @@ import com.example.talabati.model.User;
 
 public class CustomUserServiceImpl implements  UserService{
 
-    @Override
-    public ApiResponse<User> findByUsername(String username) {
+    public User findByUsername(String username) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findByUsername'");
     }

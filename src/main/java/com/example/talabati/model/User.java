@@ -2,9 +2,7 @@ package com.example.talabati.model;
 
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -54,7 +52,7 @@ public class User {
     @JoinColumn(name = "profile_settings_id", referencedColumnName = "id")
     private ProfileSettings profileSettings;
     @JsonIgnore // Prevents circular references when serializing
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
 
     @JoinTable(
             name = "user_role",
