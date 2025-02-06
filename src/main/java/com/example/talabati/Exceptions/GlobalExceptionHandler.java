@@ -45,6 +45,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 
     }
+    @ExceptionHandler(RestaurantNotFoundException.class)
+    public ResponseEntity<ApiResponse<String>> RestaurantNotFoundException(RestaurantNotFoundException ex) {
+        ApiResponse<String> response = new ApiResponse<>(404, ex.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+
+    }
         // Handle UserNotFoundException 
         @ExceptionHandler(ProfileSettingsNotFound.class)
         public ResponseEntity<ApiResponse<String>> ProfileSettingsNotFound(ProfileSettingsNotFound ex) {

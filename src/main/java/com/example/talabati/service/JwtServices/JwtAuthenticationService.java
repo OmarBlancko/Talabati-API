@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.talabati.config.Util.JwtUtil;
 import com.example.talabati.model.User;
-import com.example.talabati.service.UserService;
+import com.example.talabati.service.UserServices.UserService;
 
 @Service
 public class JwtAuthenticationService {

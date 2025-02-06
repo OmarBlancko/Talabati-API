@@ -3,7 +3,9 @@ package com.example.talabati.model;
 import java.util.List;
 import java.util.Set;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -20,11 +22,13 @@ public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(nullable=false)
     private String name;
 
+    @Column(nullable=false)
     private String address;
 
+    @Column(nullable=false)
     private String phoneNumber;
 
     private Double rating;
@@ -111,4 +115,38 @@ public class Restaurant {
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
     }
+    public void updateFrom(Restaurant other) {
+        if (other == null) {
+            throw new IllegalArgumentException("The provided restaurant is null");
+        }
+    
+        // Update basic fields
+        if (StringUtils.isNotBlank(other.getName())) {
+            this.name = other.getName().trim();
+        }
+        if (StringUtils.isNotBlank(other.getAddress())) {
+            this.address = other.getAddress().trim();
+        }
+        if (StringUtils.isNotBlank(other.getPhoneNumber())) {
+            this.phoneNumber = other.getPhoneNumber().trim();
+        }
+        if (other.getRating() != null) {
+            this.rating = other.getRating();
+        }
+    
+        // Update categories if provided
+        if (other.getCategories() != null && !other.getCategories().isEmpty()) {
+            this.categories.clear();
+            this.categories.addAll(other.getCategories());
+        }
+    
+        // Update ratings if provided
+        if (other.getRatings() != null && !other.getRatings().isEmpty()) {
+            this.ratings.clear();
+            this.ratings.addAll(other.getRatings());
+        }
+    
+        
+    }
+    
 }

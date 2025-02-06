@@ -2,6 +2,7 @@ package com.example.talabati.service;
 
 import com.example.talabati.model.ApiResponse;
 import com.example.talabati.model.User;
+import com.example.talabati.service.UserServices.UserService;
 
 public class CustomUserServiceImpl implements  UserService{
 

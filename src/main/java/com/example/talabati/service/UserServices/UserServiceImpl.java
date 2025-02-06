@@ -1,4 +1,4 @@
-package com.example.talabati.service;
+package com.example.talabati.service.UserServices;
 
 import java.util.HashSet;
 

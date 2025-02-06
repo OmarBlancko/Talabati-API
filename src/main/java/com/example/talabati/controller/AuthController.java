@@ -15,7 +15,7 @@ import com.example.talabati.model.ApiResponse;
 import com.example.talabati.model.AuthRequest;
 import com.example.talabati.model.AuthResponseDTO;
 import com.example.talabati.model.User;
-import com.example.talabati.service.UserService;
+import com.example.talabati.service.UserServices.UserService;
 
 import jakarta.servlet.ServletException;
 

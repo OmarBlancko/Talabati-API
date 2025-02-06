@@ -1,4 +1,4 @@
-package com.example.talabati.service;
+package com.example.talabati.service.UserServices;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
