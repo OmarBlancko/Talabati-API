@@ -10,15 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.talabati.model.ApiResponse;
 import com.example.talabati.model.Restaurant;
 import com.example.talabati.service.RestaurantServices.RestaurantService;
-import com.example.talabati.service.RestaurantServices.RestaurantSubCategoryService;
 
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import redis.clients.jedis.Response;
 
 
 
